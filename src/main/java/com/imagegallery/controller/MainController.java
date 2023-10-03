@@ -13,11 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/cloudinary")
+@RequestMapping("/image")
 
 public class MainController {
 
@@ -35,23 +37,24 @@ public class MainController {
         }
         Map result = cloudinaryService.upload(multipartFile);
 
-        System.out.println(result);
+        String public_id = (String) result.get("public_id");
+        String[] url = (public_id.split("/"));
 
         Image image = new Image((String)result.get("original_filename"),
                 (String)result.get("secure_url"),
-                (String) result.get("public_id"));
+                url[2]);
 
         imageService.save(image);
         return new ResponseEntity<>(new Message("Image uploaded successfully"), HttpStatus.CREATED);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping()
     public ResponseEntity<List<Image>> getImage() {
         List<Image> images = imageService.get();
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{imageId}/{id}")
+    @DeleteMapping("/{imageId}/{id}")
     public ResponseEntity<?> delete(@PathVariable("imageId") String imageId,
                                     @PathVariable("id") int id) throws IOException {
 

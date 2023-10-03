@@ -32,13 +32,13 @@ public class CloudinaryService {
 
     public Map upload(MultipartFile multipartFile) throws IOException {
         File file = convert(multipartFile);
-        Map result = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+        Map result = cloudinary.uploader().upload(file, ObjectUtils.asMap("folder", "spring_boot/image_gallery"));
         file.delete();
         return result;
     }
 
     public Map delete(String id) throws IOException {
-        Map result = cloudinary.uploader().destroy(id, ObjectUtils.emptyMap());
+        Map result = cloudinary.uploader().destroy(id, ObjectUtils.asMap("resource_type","image"));
         return result;
     }
 
